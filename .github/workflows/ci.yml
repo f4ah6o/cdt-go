@@ -18,3 +18,9 @@ jobs:
       - run: go run ./cmd/cdt check --strict
       - run: go run ./cmd/cdt coverage
       - run: go run ./cmd/cdt test
+      - run: go run ./cmd/cdt render docs -o .cdt/generated-docs
+      - run: test -s .cdt/generated-docs/cdt.generated.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cdt-generated-docs
+          path: .cdt/generated-docs/cdt.generated.md
