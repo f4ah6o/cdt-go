@@ -1,6 +1,6 @@
 # Add
 
-`Add` adds two integers.
+`Add` は 2 つの整数を足し合わせます。
 
 ```go file=add.go symbol=Add
 package calc
