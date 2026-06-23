@@ -113,9 +113,10 @@ And these edge kinds:
 - `contains`
 - `describes`
 - `implements`
-- `tests`
 - `verifies`
 - `renders_to`
 - `derived_from`
+
+Documentation uses `describes`, implementation code uses `implements`, and tests use `verifies` to connect back to concepts.
 
 LLM linking can be added later as a candidate graph generator. The deterministic extractor, validator, renderer, and test runner stay authoritative.

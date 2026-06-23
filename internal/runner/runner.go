@@ -22,9 +22,11 @@ func GoTest(g *graph.Graph) (*Result, error) {
 		return nil, err
 	}
 	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module cdt/tmp\n\ngo 1.22\n"), 0o644); err != nil {
+		_ = os.RemoveAll(dir)
 		return nil, err
 	}
-	if err := render.Code(g, dir); err != nil {
+	if err := render.AllGo(g, dir); err != nil {
+		_ = os.RemoveAll(dir)
 		return nil, err
 	}
 	cmd := exec.Command("go", "test", "./...")

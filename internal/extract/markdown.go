@@ -56,7 +56,6 @@ func Markdown(path string, b *graph.Builder) error {
 		trim := strings.TrimSpace(line)
 		if strings.HasPrefix(trim, "```") {
 			if !inFence {
-				flushDoc(lineNo - 1)
 				inFence = true
 				fenceStart = lineNo
 				rest := strings.TrimSpace(strings.TrimPrefix(trim, "```"))
@@ -68,11 +67,24 @@ func Markdown(path string, b *graph.Builder) error {
 					fenceLang = ""
 					fenceMeta = ""
 				}
+				if isProjectionFence(fenceLang, fenceMeta) {
+					flushDoc(lineNo - 1)
+				} else {
+					if len(docLines) == 0 {
+						docStart = lineNo
+					}
+					docLines = append(docLines, line)
+				}
 				fenceLines = nil
 				continue
 			}
-			if err := addFence(path, currentConcept, fenceLang, fenceMeta, fenceLines, fenceStart, lineNo, b); err != nil {
-				return err
+			if isProjectionFence(fenceLang, fenceMeta) {
+				if err := addFence(path, currentConcept, fenceLang, fenceMeta, fenceLines, fenceStart, lineNo, b); err != nil {
+					return err
+				}
+			} else {
+				docLines = append(docLines, fenceLines...)
+				docLines = append(docLines, line)
 			}
 			inFence = false
 			continue
@@ -84,6 +96,9 @@ func Markdown(path string, b *graph.Builder) error {
 		if strings.HasPrefix(trim, "#") {
 			name := strings.TrimSpace(strings.TrimLeft(trim, "#"))
 			if name != "" {
+				if len(docLines) > 0 {
+					flushDoc(lineNo - 1)
+				}
 				currentConcept = name
 			}
 		}
@@ -100,6 +115,14 @@ func Markdown(path string, b *graph.Builder) error {
 	}
 	flushDoc(lineNo)
 	return nil
+}
+
+func isProjectionFence(lang, metaText string) bool {
+	if lang != "go" {
+		return false
+	}
+	meta := ParseMeta(metaText)
+	return meta.First("file", "path") != ""
 }
 
 func addFence(path, currentConcept, lang, metaText string, lines []string, start, end int, b *graph.Builder) error {

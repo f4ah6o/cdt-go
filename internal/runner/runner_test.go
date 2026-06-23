@@ -1,6 +1,7 @@
 package runner
 
 import (
+	"os"
 	"testing"
 
 	"github.com/f4ah6o/cdt-go/internal/graph"
@@ -19,4 +20,5 @@ func TestGoTest(t *testing.T) {
 	if err != nil {
 		t.Fatalf("%v\n%s", err, res.Output)
 	}
+	defer os.RemoveAll(res.Dir)
 }

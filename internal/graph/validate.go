@@ -14,7 +14,6 @@ var edgeKinds = map[string]bool{
 	"contains":     true,
 	"describes":    true,
 	"implements":   true,
-	"tests":        true,
 	"verifies":     true,
 	"renders_to":   true,
 	"derived_from": true,
@@ -32,8 +31,8 @@ func Validate(g *Graph) error {
 		if !nodeKinds[n.Kind] {
 			return fmt.Errorf("node %s has unsupported kind %q", n.ID, n.Kind)
 		}
-		if old, exists := ids[n.ID]; exists {
-			return fmt.Errorf("duplicate node id %q (%s and %s)", n.ID, old, n.Kind)
+		if oldKind, exists := ids[n.ID]; exists {
+			return fmt.Errorf("duplicate node id %q (kinds %s and %s)", n.ID, oldKind, n.Kind)
 		}
 		ids[n.ID] = n.Kind
 	}

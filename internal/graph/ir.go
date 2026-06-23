@@ -16,13 +16,14 @@ type Graph struct {
 }
 
 type Node struct {
-	ID      string `json:"id"`
-	Kind    string `json:"kind"`
-	Name    string `json:"name,omitempty"`
-	Path    string `json:"path,omitempty"`
-	Lang    string `json:"lang,omitempty"`
-	Symbol  string `json:"symbol,omitempty"`
-	Content string `json:"content,omitempty"`
+	ID       string `json:"id"`
+	Kind     string `json:"kind"`
+	Name     string `json:"name,omitempty"`
+	Path     string `json:"path,omitempty"`
+	Lang     string `json:"lang,omitempty"`
+	Symbol   string `json:"symbol,omitempty"`
+	Content  string `json:"content,omitempty"`
+	Preamble string `json:"preamble,omitempty"`
 
 	Source     *Source `json:"source,omitempty"`
 	Inferred   bool    `json:"inferred,omitempty"`
