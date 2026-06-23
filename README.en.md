@@ -1,6 +1,6 @@
 # cdt-go
 
-`cdt` は **code**、**docs**、**tests** を 1 つのグラフに対する 3 つの投影として扱います。
+`cdt` keeps **code**, **docs**, and **tests** as three projections of one graph.
 
 ```text
         code
@@ -11,20 +11,20 @@
  docs -------- test
 ```
 
-最初の実装は Go に焦点を当てた MVP です。
+The first implementation is a Go-focused MVP:
 
-- Markdown のフェンス付きブロックと `// cdt:*` マーカーから Graph IR を抽出する
-- Graph IR から Go コード、Go テスト、生成 Markdown をレンダリングする
-- 一時ワークスペース内で、グラフから `go test` を実行する
-- docs/code/tests をまたぐ concept レベルのカバレッジを報告する
+- extract a Graph IR from Markdown fenced blocks and `// cdt:*` markers
+- render Go code, Go tests, or generated Markdown from the Graph IR
+- run `go test` from the graph in a temporary workspace
+- report concept-level coverage across docs/code/tests
 
-## インストール
+## Install
 
 ```sh
 go install github.com/f4ah6o/cdt-go/cmd/cdt@latest
 ```
 
-## Markdown 入力
+## Markdown input
 
 ````md
 # Add
@@ -52,7 +52,7 @@ func TestAdd(t *testing.T) {
 ```
 ````
 
-## Go マーカー入力
+## Go marker input
 
 ```go
 package calc
@@ -84,7 +84,7 @@ func TestAdd(t *testing.T) {
 // cdt:test end
 ```
 
-## コマンド
+## Commands
 
 ```sh
 cdt graph ./docs -o .cdt/graph.json
@@ -96,11 +96,11 @@ cdt render docs -o generated-docs
 cdt test
 ```
 
-`cdt check --strict` は、concept に docs、code、tests のいずれかが欠けている場合に失敗します。
+`cdt check --strict` fails when a concept lacks any of docs, code, or tests.
 
 ## Graph IR
 
-MVP のスキーマは 5 種類のノードを使います。
+The MVP schema uses five node kinds:
 
 - `file`
 - `doc`
@@ -108,7 +108,7 @@ MVP のスキーマは 5 種類のノードを使います。
 - `test`
 - `concept`
 
-エッジの種類は次のとおりです。
+And these edge kinds:
 
 - `contains`
 - `describes`
@@ -117,6 +117,6 @@ MVP のスキーマは 5 種類のノードを使います。
 - `renders_to`
 - `derived_from`
 
-ドキュメントは `describes`、実装コードは `implements`、テストは `verifies` を使って concept へ接続します。
+Documentation uses `describes`, implementation code uses `implements`, and tests use `verifies` to connect back to concepts.
 
-LLM によるリンク付けは、候補グラフ生成器として後から追加できます。決定的な抽出器、検証器、レンダラー、テストランナーを正とします。
+LLM linking can be added later as a candidate graph generator. The deterministic extractor, validator, renderer, and test runner stay authoritative.
